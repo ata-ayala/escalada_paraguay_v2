@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+_site/
+site_libs/
+*.nb.html
+*.md
+*.Rproj
+*.RData
+*.Rhistory
+
+/.quarto/

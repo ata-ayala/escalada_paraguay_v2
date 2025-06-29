@@ -1,0 +1,22 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Club de Escalada Asunción"
+  navbar:
+    left:
+      - text: "Inicio"
+        href: index.qmd
+      - text: "Guía Interactiva"
+        href: guia.qmd
+      - text: "Quienes Somos"
+        href: club.qmd
+      - text: "Historia"
+        href: historia.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+

@@ -1,0 +1,172 @@
+---
+title: "Guía Interactiva"
+format:
+  html:
+    echo: false
+
+---
+
+# 🧗 Guía de Escalada Deportiva en Paraguay
+
+Explorá las vías de escalada deportiva en Paraguay a través del mapa interactivo, una tabla filtrable y gráficos dinámicos.
+
+---
+
+## 🔁 Cargar shapefile, crear mapa, tabla y exportar CSV (R)
+
+```{r cargar-datos, message=FALSE, warning=FALSE}
+library(sf)
+library(dplyr)
+library(leaflet)
+library(plotly)
+library(reactable)
+
+# Leer shapefile
+vias <- st_read("data/vias_escalada.shp", quiet = TRUE)
+
+# Extraer coordenadas
+vias <- vias %>%
+  mutate(
+    lon = st_coordinates(geometry)[, 1],
+    lat = st_coordinates(geometry)[, 2]
+  )
+
+# Guardar CSV para Python
+vias %>%
+  st_drop_geometry() %>%
+  write.csv("data/vias_python.csv", row.names = FALSE)
+
+# Agrupar por coordenadas exactas
+vias_grouped <- vias %>%
+  group_by(lon, lat) %>%
+  summarise(
+    Cantidad = n(),
+    Nombre = paste(Nombre, collapse = ", "),
+    Grad_USA = paste(unique(Grad_USA), collapse = ", "),
+    Grad_F = paste(unique(Grad_F), collapse = ", "),
+    Altura_m = paste(unique(Altura_m), collapse = ", "),
+    Zona = paste(unique(Zona), collapse = ", "),
+    Sector = paste(unique(Sector), collapse = ", "),
+    .groups = "drop"
+  )
+
+# Centro del mapa
+centro <- c(mean(vias_grouped$lat), mean(vias_grouped$lon))
+
+# Ícono amarillo
+icono_am <- makeIcon(
+  iconUrl = "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+  iconWidth = 25, iconHeight = 41,
+  iconAnchorX = 12, iconAnchorY = 41
+)
+
+# Mapa interactivo
+leaflet(vias_grouped) %>%
+  addProviderTiles(providers$Esri.WorldImagery) %>%
+  setView(lng = centro[2], lat = centro[1], zoom = 17) %>%
+  addMarkers(
+    ~lon, ~lat,
+    label = ~as.character(Cantidad),
+    icon = icono_am,
+    popup = ~paste(
+      "<b>Cantidad de vías:</b>", Cantidad, "<br>",
+      "<b>Vías:</b>", Nombre, "<br>",
+      "<b>Grado:</b>", Grad_USA, " / ", Grad_F, "<br>",
+      "<b>Altura:</b>", Altura_m, " m<br>",
+      "<b>Zona:</b>", Zona, "<br>",
+      "<b>Sector:</b>", Sector
+    ),
+    clusterOptions = markerClusterOptions(
+      showCoverageOnHover = TRUE,
+      zoomToBoundsOnClick = TRUE,
+      spiderfyOnMaxZoom = TRUE
+    )
+  )
+
+
+```
+  
+
+📊 Tabla Filtrable de Vías (R)
+
+
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+
+# Preparar los datos
+vias_df <- vias %>%
+  st_drop_geometry() %>%
+  filter(!is.na(Grad_USA)) %>%
+  group_by(Grad_USA) %>%
+  summarise(Vias = n(), orden = first(orden)) %>%
+  mutate(
+    color_manual = case_when(
+      orden %in% 1:2 ~ "#08306b",
+      orden %in% 3:4 ~ "#6baed6",
+      orden %in% 5:6 ~ "#ffff33",
+      orden %in% 7:8 ~ "#fdae61",
+      orden %in% 9:10 ~ "#d7191c"
+    ),
+    Grad_USA = factor(Grad_USA, levels = Grad_USA[order(orden)])
+  )
+
+# Gráfico moderno para la web
+ggplot(vias_df, aes(x = Grad_USA, y = Vias, fill = color_manual)) +
+  geom_col(width = 0.6, color = "white") +
+  geom_text(aes(label = Vias), vjust = -0.3, size = 4.2, fontface = "bold") +
+  scale_fill_identity() +
+  labs(
+    title = "Cantidad de vías por dificultad (Gradación USA)",
+    x = "Grado en escala USA",
+    y = "Cantidad de vías"
+  ) +
+  theme_minimal(base_size = 15) +
+  theme(
+    panel.grid = element_blank(),  # 🔹 Elimina todas las líneas de fondo
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    plot.title = element_text(size = 18, face = "bold"),
+    axis.title = element_text(size = 14)
+  )
+
+
+
+```
+
+```{r}
+reactable(
+  vias %>% st_drop_geometry(),
+  columns = list(
+    orden = colDef(show = FALSE),
+    Nombre = colDef(name = "Vía de Escalada", style = list(fontWeight = "bold")),
+    Grad_USA = colDef(name = "Grado (USA)", align = "center"),
+    Grad_F   = colDef(name = "Grado (Francia)", align = "center"),
+    Altura_m = colDef(name = "Altura (m)", align = "center"),
+    Zona     = colDef(name = "Zona"),
+    Sector   = colDef(name = "Sector")
+  ),
+  defaultSorted = "orden",
+  filterable = TRUE,
+  searchable = TRUE,
+  pagination = TRUE,
+  defaultPageSize = 10,
+  striped = TRUE,
+  highlight = TRUE,
+  bordered = TRUE,
+  style = list(
+    fontSize = "13px",          # más chica
+    lineHeight = "1.1",         # más apretado aún
+    padding = "2px 6px"         # mínimo padding vertical y lateral
+  ),
+  theme = reactableTheme(
+    borderColor = "#e0e0e0",
+    stripedColor = "#f9f9f9",
+    highlightColor = "#f0f0f0",
+    cellPadding = "2px 6px"
+  )
+)
+
+
+```

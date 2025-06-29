@@ -1,0 +1,51 @@
+---
+title: "Club"
+format: html
+---
+
+# 🧑‍🤝‍🧑 Quiénes Somos
+
+Somos una comunidad de escaladores y senderistas que promueve el deporte en armonía con la naturaleza.
+
+## 🧾 Reglas del Club
+
+- Uso obligatorio de casco en todos los sectores.
+- Respetar el entorno natural y no dejar basura.
+- Mantener el respeto y la convivencia entre escaladores.
+
+
+## 🕒 Horarios
+
+| Días        | Horarios       | Modalidad   |
+|-------------|----------------|-------------|
+| Lunes       | 18:00 a 22:00  | Muro libre  | 
+| Martes      | 18:00 a 20:00  | Clases de escalada | 
+| Miercoles   | 18:00 a 22:00  | Muro libre  | 
+| Jueves      | 18:00 a 20:00  | Clases de escalada | 
+| Viernes     | 18:00 a 22:00  | Muro libre  | 
+| Sabado      | 16:00 a 18:00  | Clases de iniciación a la escalada | 
+
+
+
+
+## 💰 Tarifas
+
+# Individuales
+
+| Modalidad       |Tipo de miembro | Cuota mensual   |
+|-----------------|----------------|-----------------|
+| Muro libre      | No socio       | Gs. 240.000     |
+| Muro libre      | Socios         | Gs. 100.000     |
+| Pase dario      | No socios      | Gs. 55.000      | 
+| Pase diario     | socios         | Gs. 100.000     |
+| Membresia socio | Cuota social anual | Gs. 300.000 |    
+
+# Paquetes
+
+|Clases  |Días                     | Costo        |
+|--------|-------------------------|--------------|
+| 12     | Martes, jueves y sabado | Gs. 360.000  |
+| 8      | Martes, jueves          | Gs. 240.000  |
+| 4      | Sabado                  | Gs. 120.000  |
+| 1      | por día                 | Gs.  65.000  |
+
