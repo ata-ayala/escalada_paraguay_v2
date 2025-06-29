@@ -1,13 +1,15 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
 _site/
 site_libs/
+_book/
+.quarto/
+
+# Archivos de RStudio
+.Rproj.user/
+*.Rproj
+.RData
+.Rhistory
+
+# Archivos de Jupyter
 *.nb.html
 *.md
-*.Rproj
-*.RData
-*.Rhistory
-
 /.quarto/
